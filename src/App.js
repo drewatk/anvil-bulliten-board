@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { List } from "./List";
+import { WithGrid as Grid } from "./Grid";
 import "./App.css";
 
 class App extends Component {
@@ -9,7 +9,7 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Welcome to The Anvil Bulletin Board</h1>
         </header>
-        <List />
+        <Grid />
       </div>
     );
   }

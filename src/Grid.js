@@ -1,6 +1,8 @@
 import React from "react";
+import sizeMe from "react-sizeme";
+import StackGrid from "react-stack-grid";
 import config from "./config";
-import { ListItem } from "./ListItem";
+import { GridItem } from "./GridItem";
 
 /**
  * Load the cars from the spreadsheet
@@ -18,11 +20,10 @@ export function load(callback) {
           const data = response.result.values;
           const listings =
             data.map(listing => ({
-              message: listing[0],
-              image: listing[1],
+              date: listing[0],
+              message: listing[1],
               contact: listing[2]
             })) || [];
-          console.log(response);
           callback(listings);
         },
         response => {
@@ -32,10 +33,11 @@ export function load(callback) {
   });
 }
 
-export class List extends React.Component {
+class Grid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
       listings: [],
       error: null
     };
@@ -60,17 +62,31 @@ export class List extends React.Component {
   };
 
   onLoad = (listings, error) => {
-    console.log(listings);
     if (listings) {
-      this.setState({ listings });
+      this.setState({ loading: false, listings });
     } else {
-      this.setState({ error });
+      this.setState({ lodading: false, error });
     }
   };
 
   render() {
-    return this.state.listings.map((item, index) => (
-      <ListItem item={item} key={index} />
+    const { loading, error } = this.state;
+    const {
+      size: { width }
+    } = this.props;
+    const listings = this.state.listings.map((item, index) => (
+      <GridItem item={item} key={index} />
     ));
+    return (
+      <div>
+        {loading && "Loading..."}
+        {error && "There was an error loading the bulletin board"}
+        <StackGrid columnWidth={width <= 768 ? "100%" : "25%"}>
+          {listings}
+        </StackGrid>
+      </div>
+    );
   }
 }
+
+export const WithGrid = sizeMe()(Grid);
